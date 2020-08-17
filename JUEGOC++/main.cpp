@@ -1,5 +1,6 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
+#include <thread>
 #include "pokemonclass.h"
 #include "menu.h"
 #include "Seleccion.h"
@@ -55,7 +56,6 @@ int main()
 	std::string pokemontwo;
     
     float deltaTime = 0.0f;
-    float deltaTime1 = 0.0f;
     Clock clock;
     
     
@@ -307,13 +307,48 @@ int main()
 			   	
 								
 								while(window.isOpen()){
+								
+									int cont = 0;
 									
 									if(p1.getHealth()<=0 || p2.getHealth()<=0){
-			       						break;	
+										for(int i =0; i<3000; i++){
+											Event closeevent;
+											while(window.pollEvent(closeevent)){
+												if(closeevent.type == Event::Closed){
+													window.close();
+												}
+											}
+											
+											
+							    			
+											window.clear();
+											p1.p1.Draw(window);
+											p2.p1.Draw(window);
+											if(p1.getHealth()<=0){
+												Text pokemonwinner;
+			   									pokemonwinner.setFont(font);
+			   									pokemonwinner.setCharacterSize(130);
+			    								pokemonwinner.setString(p2.getName()+" won the game");
+			    								pokemonwinner.setOrigin(-90,-110);
+			    								window.draw(pokemonwinner);
+											}
+											
+											if(p2.getHealth()<=0){
+												Text pokemonwinner;
+			   									pokemonwinner.setFont(font);
+			   									pokemonwinner.setCharacterSize(130);
+			    								pokemonwinner.setString(p1.getName()+" won the game");
+			    								pokemonwinner.setOrigin(-90,-110);
+			    								window.draw(pokemonwinner);
+											}
+											
+											window.display();
+											
+										}
+										break;
 								   	}
 									
 									deltaTime = clock.restart().asSeconds();
-									deltaTime1 = clock.restart().asSeconds();
 									
 									Event gameevent;
 									
@@ -337,7 +372,6 @@ int main()
 									
 									
 									p1.p1.Update(deltaTime);
-									
 									if(Keyboard::isKeyPressed(Keyboard::C) && (turn==0)){
 										
 										p1.attack(p2);
